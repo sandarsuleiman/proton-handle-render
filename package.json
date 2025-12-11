@@ -1,0 +1,23 @@
+{
+  "name": "proton-handle-render",
+  "version": "1.0.0",
+  "description": "Free Proton VPN Detection API - Deployed on Render",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [
+    "protonvpn",
+    "handle-api",
+    "render",
+    "vpn-detection"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
