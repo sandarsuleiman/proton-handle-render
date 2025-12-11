@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: proton-handle-api
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /health
+    autoDeploy: true
+    domains:
+      - proton-handle-api.onrender.com
